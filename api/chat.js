@@ -1,12 +1,9 @@
 export default async function handler(req, res) {
-  // รับเฉพาะ HTTP POST Request
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { userPrompt, systemInstruction } = req.body;
-  
-  // ดึงค่า API Key จาก Environment Variable บน Vercel
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -27,11 +24,26 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const replyText = data.candidates[0].content.parts[0].text;
 
-    return res.status(200).json({ text: replyText });
+    // เช็คกรณี API ส่ง Error กลับมาจาก Google
+    if (data.error) {
+      console.error('Google Gemini API Error Detail:', data.error);
+      return res.status(data.error.code || 500).json({ 
+        error: `Gemini API Error: ${data.error.message || 'Unknown error'}` 
+      });
+    }
+
+    // เช็คว่ามีข้อมูล candidates ส่งกลับมาจริงไหม ก่อนดึงค่า [0]
+    if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+      const replyText = data.candidates[0].content.parts[0].text;
+      return res.status(200).json({ text: replyText });
+    } else {
+      console.error('Unexpected Gemini Response format:', JSON.stringify(data));
+      return res.status(500).json({ error: 'ไม่พบข้อความตอบกลับจาก AI (อาจติด Safety Filter)' });
+    }
+
   } catch (error) {
-    console.error('Gemini API Error:', error);
-    return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการขอข้อมูลจาก Gemini API' });
+    console.error('Server Catch Error:', error);
+    return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์' });
   }
 }
