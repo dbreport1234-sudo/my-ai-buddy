@@ -13,14 +13,10 @@
       --text-main: #1f2937;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg-color);
       color: var(--text-main);
       display: flex;
@@ -43,22 +39,12 @@
       gap: 20px;
     }
 
-    .header h2 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #111827;
-    }
+    .header h2 { font-size: 22px; font-weight: 700; }
+    .header p { font-size: 13px; color: #6b7280; margin-top: 4px; }
 
-    .header p {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-
-    /* กราฟิกตัวละครการ์ตูน */
     .avatar-wrapper {
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       margin: 0 auto;
       position: relative;
     }
@@ -71,76 +57,44 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .face {
-      position: relative;
-      width: 90px;
-      height: 90px;
-    }
-
-    .eye {
-      width: 14px;
-      height: 14px;
-      background: #1e1b4b;
-      border-radius: 50%;
-      position: absolute;
-      top: 28px;
-    }
-
-    .eye.left { left: 16px; }
-    .eye.right { right: 16px; }
+    .face { position: relative; width: 80px; height: 80px; }
+    .eye { width: 12px; height: 12px; background: #1e1b4b; border-radius: 50%; position: absolute; top: 24px; }
+    .eye.left { left: 14px; }
+    .eye.right { right: 14px; }
 
     .mouth {
-      width: 28px;
-      height: 8px;
+      width: 24px;
+      height: 6px;
       background: #ef4444;
-      border-radius: 0 0 14px 14px;
+      border-radius: 0 0 12px 12px;
       position: absolute;
-      bottom: 18px;
-      left: 31px;
+      bottom: 16px;
+      left: 28px;
       transition: height 0.1s ease;
     }
 
     .talking .mouth {
-      animation: talk 0.18s infinite alternate ease-in-out;
+      animation: talk 0.2s infinite alternate ease-in-out;
     }
 
     @keyframes talk {
-      0% { height: 4px; border-radius: 4px; }
-      100% { height: 20px; border-radius: 0 0 14px 14px; }
+      0% { height: 4px; }
+      100% { height: 18px; }
     }
 
-    /* เมนูควบคุม และโหมด */
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      text-align: left;
-    }
-
-    label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #374151;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .controls { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+    label { font-size: 12px; font-weight: 600; color: #374151; }
 
     select {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: 1.5px solid #e5e7eb;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 14px;
       outline: none;
       background: #f9fafb;
-      transition: border-color 0.2s;
-    }
-
-    select:focus {
-      border-color: var(--primary);
     }
 
     .btn-start {
@@ -153,21 +107,11 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
-      margin-top: 6px;
     }
 
-    .btn-start:hover {
-      background: var(--primary-hover);
-    }
+    .btn-start:hover { background: var(--primary-hover); }
 
-    /* กล่องข้อความและสถานะ */
-    .status-text {
-      font-size: 13px;
-      color: #4b5563;
-      font-weight: 500;
-      min-height: 20px;
-    }
+    .status-text { font-size: 13px; color: #4b5563; min-height: 20px; }
 
     .chat-log {
       max-height: 140px;
@@ -180,18 +124,11 @@
       text-align: left;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .chat-log .user {
-      color: #1e40af;
-      font-weight: 500;
-    }
-
-    .chat-log .ai {
-      color: #065f46;
-      font-weight: 500;
-    }
+    .chat-log .user { color: #1e40af; }
+    .chat-log .ai { color: #065f46; }
   </style>
 </head>
 <body>
@@ -199,7 +136,7 @@
 <div class="chat-card">
   <div class="header">
     <h2>AI Companion 🤖</h2>
-    <p>เพื่อนคุย & สอนภาษาแบบเปิดไมค์คุยได้เลย</p>
+    <p>เพื่อนคุย & ครูสอนภาษาแบบ Hands-Free</p>
   </div>
 
   <div class="avatar-wrapper">
@@ -217,17 +154,19 @@
       <label for="modeSelect">เลือกรูปแบบการคุย:</label>
       <select id="modeSelect">
         <option value="companion">🤝 เพื่อนคุยแก้เหงา (ภาษาไทย)</option>
-        <option value="english_teacher">🇬🇧 ครูสอนภาษาอังกฤษ (พูดอังกฤษ + แก้ไวยากรณ์)</option>
-        <option value="bilingual_chat">🌏 คุยสลับ 2 ภาษา (ไทย-อังกฤษ ชิลๆ)</option>
+        <option value="english_teacher">🇬🇧 ครูสอนภาษาอังกฤษ (English Tutor)</option>
+        <option value="bilingual_chat">🌏 คุยสลับ 2 ภาษา (ไทย-อังกฤษ)</option>
       </select>
     </div>
 
     <div>
       <label for="voiceSelect">เลือกเสียง AI:</label>
-      <select id="voiceSelect"><option>กำลังโหลดเสียงในระบบ...</option></select>
+      <select id="voiceSelect">
+        <option value="">-- กดปุ่มเริ่มเพื่อโหลดเสียง --</option>
+      </select>
     </div>
 
-    <button class="btn-start" id="startBtn">▶️ เริ่มต้นพูดคุย (Hands-Free)</button>
+    <button class="btn-start" id="startBtn">▶️ เริ่มต้นพูดคุย (กดเปิดไมค์)</button>
   </div>
 
   <div class="status-text" id="status">พร้อมใช้งาน กดปุ่มด้านบนเพื่อเริ่มได้เลย</div>
