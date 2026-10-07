@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Vercel Settings' });
   }
 
+  // ปรับแก้ Endpoint เป็นรูปแบบมาตรฐานที่ถูกต้อง
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   try {
@@ -25,21 +26,18 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // เช็คกรณี API ส่ง Error กลับมาจาก Google
     if (data.error) {
-      console.error('Google Gemini API Error Detail:', data.error);
+      console.error('Gemini API Error Detail:', data.error);
       return res.status(data.error.code || 500).json({ 
         error: `Gemini API Error: ${data.error.message || 'Unknown error'}` 
       });
     }
 
-    // เช็คว่ามีข้อมูล candidates ส่งกลับมาจริงไหม ก่อนดึงค่า [0]
     if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
       const replyText = data.candidates[0].content.parts[0].text;
       return res.status(200).json({ text: replyText });
     } else {
-      console.error('Unexpected Gemini Response format:', JSON.stringify(data));
-      return res.status(500).json({ error: 'ไม่พบข้อความตอบกลับจาก AI (อาจติด Safety Filter)' });
+      return res.status(500).json({ error: 'ไม่พบข้อความตอบกลับจาก AI' });
     }
 
   } catch (error) {
