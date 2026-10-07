@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // รับเฉพาะ HTTP Method POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -8,18 +7,16 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Vercel Environment Variables' });
+    return res.status(500).json({ error: 'ยังไม่ได้ตั้งค่า GEMINI_API_KEY ใน Vercel Settings' });
   }
 
-  // ใช้ Model gemini-1.5-flash ที่รองรับ REST API Standard
+  // เรียกใช้ Endpoint gemini-1.5-flash
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json' 
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [
           {
@@ -32,26 +29,22 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // เช็คกรณี Google AI Studio ตอบกลับมาเป็น Error (เช่น Key ผิด หรือติด Quota)
     if (data.error) {
-      console.error('Gemini API Error Detail:', data.error);
-      return res.status(data.error.code || 500).json({ 
-        error: `Gemini API Error: ${data.error.message || 'Unknown error'}` 
-      });
+      console.error('Gemini API Error:', data.error);
+      return res.status(500).json({ error: `Gemini API Error: ${data.error.message}` });
     }
 
-    // ดึงข้อความคำตอบอย่างปลอดภัยด้วย Optional Chaining
+    // ดึงข้อความตอบกลับ
     const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (replyText) {
       return res.status(200).json({ text: replyText });
     } else {
-      console.error('Unexpected Gemini Response format:', JSON.stringify(data));
-      return res.status(500).json({ error: 'ไม่พบข้อความตอบกลับจาก AI (อาจติด Safety Filter)' });
+      return res.status(500).json({ error: 'AI ไม่ได้ส่งข้อความตอบกลับ (อาจติด Safety Filter)' });
     }
 
   } catch (error) {
-    console.error('Server Catch Error:', error);
-    return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์' });
+    console.error('Server Error:', error);
+    return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์' });
   }
 }
