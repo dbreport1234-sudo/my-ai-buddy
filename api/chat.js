@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   // ปรับใช้ gemini-1.5-flash-latest หรือ gemini-2.0-flash
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   try {
     const response = await fetch(endpoint, {
